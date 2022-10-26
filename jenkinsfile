@@ -15,13 +15,13 @@ pipeline {
 			}
 			stage ('Build Docker Image') {
 				steps {
-                        sh "docker build -t haisrig/demo:latest ."
+                        sh "docker build -t 209843432/demo:latest ."
 					}
 			}
 			stage ('Publish Docker Image') {
 				steps {
                         sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-                        sh 'docker push haisrig/demo:latest'
+                        sh 'docker push 209843432/demo:latest'
                 }
 			}
 			stage ('EKS Deploy') {
