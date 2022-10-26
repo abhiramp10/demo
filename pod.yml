@@ -8,6 +8,6 @@ metadata:
 spec:
   containers:
   - name: node-app
-    image: haisrig/demo
+    image: 209843432/demo
     ports:
          - containerPort: 8080
