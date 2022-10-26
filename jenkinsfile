@@ -1,0 +1,38 @@
+pipeline {  
+    environment {
+		DOCKERHUB_CREDENTIALS=credentials('docker-hub')
+	}
+    agent any  
+    stages {  
+            stage ('Build') {  
+                steps {  
+                        withCredentials([file(credentialsId: 'kube_config', variable: 'kube_config')]) {
+                        echo "${kube_config}"
+                        echo 'Running build phase...'  
+                        sh "mvn clean install"
+					}
+				}
+			}
+			stage ('Build Docker Image') {
+				steps {
+                        sh "docker build -t haisrig/demo:latest ."
+					}
+			}
+			stage ('Publish Docker Image') {
+				steps {
+                        sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+                        sh 'docker push haisrig/demo:latest'
+                }
+			}
+			stage ('EKS Deploy') {
+				steps {
+					withKubeConfig([credentialsId: 'kube_config']) {
+						  sh 'kubectl delete pod node-app-pod --ignore-not-found=true'
+						  sh 'kubectl apply -f pod.yml'
+						  sh 'kubectl apply -f service.yml'
+					}
+				}
+            }  
+        }  
+      
+}  
