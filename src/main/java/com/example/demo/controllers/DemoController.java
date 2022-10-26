@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class DemoController {
     @GetMapping(path = "/")
     public String getVersion() {
-        return "Version: 2";
+        return "Version: 3";
     }
 }
